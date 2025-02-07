@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Menú JSON</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos específicos para el formulario */
+        #menuForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #menuForm label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #menuForm input,
+        #menuForm textarea,
+        #menuForm select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        #menuForm button {
+            background-color: #e67e22;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #menuForm button:hover {
+            background-color: #d35400;
+        }
+
+        #jsonOutput {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Generar Menú JSON</h1>
+    </header>
+    <main>
+        <form id="menuForm">
+            <label for="seccion">Sección:</label>
+            <select id="seccion" name="seccion">
+                <option value="tapas">Tapas</option>
+                <option value="plancha">Plancha</option>
+                <option value="raciones">Raciones</option>
+                <option value="postres">Postres</option>
+                <option value="especial">Especial</option>
+            </select>
+
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" required></textarea>
+
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" step="0.01" required>
+
+            <label for="imagen">URL de la Imagen:</label>
+            <input type="text" id="imagen" name="imagen" required>
+
+            <button type="submit">Agregar al Menú</button>
+        </form>
+
+        <pre id="jsonOutput"></pre>
+    </main>
+    <script>
+        document.getElementById('menuForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const seccion = document.getElementById('seccion').value;
+            const nombre = document.getElementById('nombre').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const precio = parseFloat(document.getElementById('precio').value);
+            const imagen = document.getElementById('imagen').value;
+
+            const item = { nombre, descripcion, precio, imagen };
+
+            let menu = JSON.parse(localStorage.getItem('menu')) || { tapas: [], plancha: [], raciones: [], postres: [], especial: [] };
+            menu[seccion].push(item);
+
+            localStorage.setItem('menu', JSON.stringify(menu));
+            document.getElementById('jsonOutput').textContent = JSON.stringify(menu, null, 2);
+        });
+    </script>
+</body>
+</html>
